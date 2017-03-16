@@ -1,0 +1,5 @@
+rootProject.name = 'group'
+
+includeBuild 'api'
+includeBuild 'service'
+includeBuild 'component-test'
