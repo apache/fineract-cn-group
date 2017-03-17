@@ -40,7 +40,7 @@ import java.util.Set;
 
 @SuppressWarnings("unused")
 @FeignClient(name="group-v1", path="/group/v1", configuration=CustomFeignClientsConfiguration.class)
-public interface GroupClient {
+public interface GroupManager {
 
   @RequestMapping(
       value = "/definitions",

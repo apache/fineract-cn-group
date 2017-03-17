@@ -25,7 +25,7 @@ import io.mifos.core.test.fixture.mariadb.MariaDBInitializer;
 import io.mifos.core.test.listener.EnableEventRecording;
 import io.mifos.core.test.listener.EventRecorder;
 import io.mifos.group.api.v1.EventConstants;
-import io.mifos.group.api.v1.client.GroupClient;
+import io.mifos.group.api.v1.client.GroupManager;
 import io.mifos.group.api.v1.domain.GroupDefinition;
 import io.mifos.group.service.GroupConfiguration;
 import io.mifos.group.util.GroupDefinitionGenerator;
@@ -68,7 +68,7 @@ public class TestGroupDefinition {
           = new TenantApplicationSecurityEnvironmentTestRule(testEnvironment, this::waitForInitialize);
 
   @Autowired
-  private GroupClient groupClient;
+  private GroupManager testSubject;
   @Autowired
   private EventRecorder eventRecorder;
 
@@ -100,11 +100,11 @@ public class TestGroupDefinition {
   @Test
   public void shouldCreateGroupDefinition() throws Exception {
     final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
-    this.groupClient.createGroupDefinition(randomGroupDefinition);
+    this.testSubject.createGroupDefinition(randomGroupDefinition);
 
     this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
 
-    final GroupDefinition fetchedGroupDefinition = this.groupClient.findGroupDefinition(randomGroupDefinition.getIdentifier());
+    final GroupDefinition fetchedGroupDefinition = this.testSubject.findGroupDefinition(randomGroupDefinition.getIdentifier());
 
     Assert.assertEquals(randomGroupDefinition.getIdentifier(), fetchedGroupDefinition.getIdentifier());
     Assert.assertEquals(randomGroupDefinition.getDescription(), fetchedGroupDefinition.getDescription());

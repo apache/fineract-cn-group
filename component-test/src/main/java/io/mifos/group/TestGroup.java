@@ -24,7 +24,7 @@ import io.mifos.core.test.fixture.mariadb.MariaDBInitializer;
 import io.mifos.core.test.listener.EnableEventRecording;
 import io.mifos.core.test.listener.EventRecorder;
 import io.mifos.group.api.v1.EventConstants;
-import io.mifos.group.api.v1.client.GroupClient;
+import io.mifos.group.api.v1.client.GroupManager;
 import io.mifos.group.api.v1.domain.AssignedEmployeeHolder;
 import io.mifos.group.api.v1.domain.Attendee;
 import io.mifos.group.api.v1.domain.Group;
@@ -81,7 +81,7 @@ public class TestGroup {
   public final TenantApplicationSecurityEnvironmentTestRule tenantApplicationSecurityEnvironment
           = new TenantApplicationSecurityEnvironmentTestRule(testEnvironment, this::waitForInitialize);
   @Autowired
-  private GroupClient groupClient;
+  private GroupManager testSubject;
   @Autowired
   private EventRecorder eventRecorder;
 
@@ -113,17 +113,17 @@ public class TestGroup {
   public void shouldCreateGroup() throws Exception {
     final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
 
-    this.groupClient.createGroupDefinition(randomGroupDefinition);
+    this.testSubject.createGroupDefinition(randomGroupDefinition);
 
     this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
 
     final Group randomGroup = GroupGenerator.createRandomGroup(randomGroupDefinition.getIdentifier());
 
-    this.groupClient.createGroup(randomGroup);
+    this.testSubject.createGroup(randomGroup);
 
     this.eventRecorder.wait(EventConstants.POST_GROUP, randomGroup.getIdentifier());
 
-    final Group fetchedGroup = this.groupClient.findGroup(randomGroup.getIdentifier());
+    final Group fetchedGroup = this.testSubject.findGroup(randomGroup.getIdentifier());
     Assert.assertEquals(randomGroup.getIdentifier(), fetchedGroup.getIdentifier());
     Assert.assertEquals(randomGroup.getGroupDefinitionIdentifier(), fetchedGroup.getGroupDefinitionIdentifier());
     Assert.assertEquals(randomGroup.getName(), fetchedGroup.getName());
@@ -143,14 +143,14 @@ public class TestGroup {
   @Test
   public void shouldActivateCommand() throws Exception {
     final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
-    this.groupClient.createGroupDefinition(randomGroupDefinition);
+    this.testSubject.createGroupDefinition(randomGroupDefinition);
     this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
 
     final Group randomGroup = GroupGenerator.createRandomGroup(randomGroupDefinition.getIdentifier());
-    this.groupClient.createGroup(randomGroup);
+    this.testSubject.createGroup(randomGroup);
     this.eventRecorder.wait(EventConstants.POST_GROUP, randomGroup.getIdentifier());
 
-    final Group fetchedGroup = this.groupClient.findGroup(randomGroup.getIdentifier());
+    final Group fetchedGroup = this.testSubject.findGroup(randomGroup.getIdentifier());
     Assert.assertEquals(Group.Status.PENDING.name(), fetchedGroup.getStatus());
 
     final GroupCommand activate = new GroupCommand();
@@ -159,13 +159,13 @@ public class TestGroup {
     activate.setCreatedBy(TestGroup.TEST_USER);
     activate.setCreatedOn(ZonedDateTime.now(Clock.systemUTC()).format(DateTimeFormatter.ISO_ZONED_DATE_TIME));
 
-    this.groupClient.processGroupCommand(randomGroup.getIdentifier(), activate);
+    this.testSubject.processGroupCommand(randomGroup.getIdentifier(), activate);
     this.eventRecorder.wait(EventConstants.ACTIVATE_GROUP, randomGroup.getIdentifier());
 
-    final Group activatedGroup = this.groupClient.findGroup(randomGroup.getIdentifier());
+    final Group activatedGroup = this.testSubject.findGroup(randomGroup.getIdentifier());
     Assert.assertEquals(Group.Status.ACTIVE.name(), activatedGroup.getStatus());
 
-    final List<GroupCommand> groupCommands = this.groupClient.fetchGroupCommands(activatedGroup.getIdentifier());
+    final List<GroupCommand> groupCommands = this.testSubject.fetchGroupCommands(activatedGroup.getIdentifier());
     Assert.assertTrue(groupCommands.size() == 1);
     final GroupCommand groupCommand = groupCommands.get(0);
     Assert.assertEquals(activate.getAction(), groupCommand.getAction());
@@ -173,7 +173,7 @@ public class TestGroup {
     Assert.assertEquals(activate.getCreatedBy(), groupCommand.getCreatedBy());
     Assert.assertNotNull(groupCommand.getCreatedOn());
 
-    final List<Meeting> meetings = this.groupClient.fetchMeetings(activatedGroup.getIdentifier(), Boolean.FALSE);
+    final List<Meeting> meetings = this.testSubject.fetchMeetings(activatedGroup.getIdentifier(), Boolean.FALSE);
     Assert.assertNotNull(meetings);
     Assert.assertEquals(randomGroupDefinition.getCycle().getNumberOfMeetings(), Integer.valueOf(meetings.size()));
 
@@ -191,37 +191,37 @@ public class TestGroup {
         .collect(Collectors.toSet())
     );
 
-    this.groupClient.closeMeeting(activatedGroup.getIdentifier(), signOffMeeting);
+    this.testSubject.closeMeeting(activatedGroup.getIdentifier(), signOffMeeting);
     this.eventRecorder.wait(EventConstants.PUT_GROUP, activatedGroup.getIdentifier());
   }
 
   @Test
   public void shouldUpdateLeaders() throws Exception {
     final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
-    this.groupClient.createGroupDefinition(randomGroupDefinition);
+    this.testSubject.createGroupDefinition(randomGroupDefinition);
     this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
 
     final Group randomGroup = GroupGenerator.createRandomGroup(randomGroupDefinition.getIdentifier());
-    this.groupClient.createGroup(randomGroup);
+    this.testSubject.createGroup(randomGroup);
     this.eventRecorder.wait(EventConstants.POST_GROUP, randomGroup.getIdentifier());
 
     final int currentLeadersSize = randomGroup.getLeaders().size();
     randomGroup.getLeaders().add(RandomStringUtils.randomAlphanumeric(32));
-    this.groupClient.updateLeaders(randomGroup.getIdentifier(), randomGroup.getLeaders());
+    this.testSubject.updateLeaders(randomGroup.getIdentifier(), randomGroup.getLeaders());
     this.eventRecorder.wait(EventConstants.PUT_GROUP, randomGroup.getIdentifier());
 
-    final Group fetchedGroup = this.groupClient.findGroup(randomGroup.getIdentifier());
+    final Group fetchedGroup = this.testSubject.findGroup(randomGroup.getIdentifier());
     Assert.assertEquals((currentLeadersSize + 1), fetchedGroup.getLeaders().size());
   }
 
   @Test
   public void shouldUpdateMembers() throws Exception {
     final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
-    this.groupClient.createGroupDefinition(randomGroupDefinition);
+    this.testSubject.createGroupDefinition(randomGroupDefinition);
     this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
 
     final Group randomGroup = GroupGenerator.createRandomGroup(randomGroupDefinition.getIdentifier());
-    this.groupClient.createGroup(randomGroup);
+    this.testSubject.createGroup(randomGroup);
     this.eventRecorder.wait(EventConstants.POST_GROUP, randomGroup.getIdentifier());
 
     final int currentMembersSize = randomGroup.getMembers().size();
@@ -229,30 +229,30 @@ public class TestGroup {
         RandomStringUtils.randomAlphanumeric(32),
         RandomStringUtils.randomAlphanumeric(32)
     ));
-    this.groupClient.updateMembers(randomGroup.getIdentifier(), randomGroup.getMembers());
+    this.testSubject.updateMembers(randomGroup.getIdentifier(), randomGroup.getMembers());
     this.eventRecorder.wait(EventConstants.PUT_GROUP, randomGroup.getIdentifier());
 
-    final Group fetchedGroup = this.groupClient.findGroup(randomGroup.getIdentifier());
+    final Group fetchedGroup = this.testSubject.findGroup(randomGroup.getIdentifier());
     Assert.assertEquals((currentMembersSize + 2), fetchedGroup.getMembers().size());
   }
 
   @Test
   public void shouldUpdateAssignedEmployee() throws Exception {
     final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
-    this.groupClient.createGroupDefinition(randomGroupDefinition);
+    this.testSubject.createGroupDefinition(randomGroupDefinition);
     this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
 
     final Group randomGroup = GroupGenerator.createRandomGroup(randomGroupDefinition.getIdentifier());
-    this.groupClient.createGroup(randomGroup);
+    this.testSubject.createGroup(randomGroup);
     this.eventRecorder.wait(EventConstants.POST_GROUP, randomGroup.getIdentifier());
 
     final AssignedEmployeeHolder anotherEmployee = new AssignedEmployeeHolder();
     anotherEmployee.setIdentifier(RandomStringUtils.randomAlphanumeric(32));
 
-    this.groupClient.updateAssignedEmployee(randomGroup.getIdentifier(), anotherEmployee);
+    this.testSubject.updateAssignedEmployee(randomGroup.getIdentifier(), anotherEmployee);
     this.eventRecorder.wait(EventConstants.PUT_GROUP, randomGroup.getIdentifier());
 
-    final Group fetchedGroup = this.groupClient.findGroup(randomGroup.getIdentifier());
+    final Group fetchedGroup = this.testSubject.findGroup(randomGroup.getIdentifier());
     Assert.assertEquals(anotherEmployee.getIdentifier(), fetchedGroup.getAssignedEmployee());
   }
 
