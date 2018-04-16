@@ -18,10 +18,10 @@
  */
 package io.mifos.group.service.internal.mapper;
 
-import io.mifos.core.lang.DateConverter;
-import io.mifos.group.service.internal.repository.GroupDefinitionEntity;
 import io.mifos.group.api.v1.domain.Cycle;
 import io.mifos.group.api.v1.domain.GroupDefinition;
+import io.mifos.group.service.internal.repository.GroupDefinitionEntity;
+import org.apache.fineract.cn.lang.DateConverter;
 
 public class GroupDefinitionMapper {
 

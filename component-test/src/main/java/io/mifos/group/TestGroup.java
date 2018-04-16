@@ -18,14 +18,6 @@
  */
 package io.mifos.group;
 
-import io.mifos.anubis.test.v1.TenantApplicationSecurityEnvironmentTestRule;
-import io.mifos.core.api.context.AutoUserContext;
-import io.mifos.core.test.env.TestEnvironment;
-import io.mifos.core.test.fixture.TenantDataStoreContextTestRule;
-import io.mifos.core.test.fixture.cassandra.CassandraInitializer;
-import io.mifos.core.test.fixture.mariadb.MariaDBInitializer;
-import io.mifos.core.test.listener.EnableEventRecording;
-import io.mifos.core.test.listener.EventRecorder;
 import io.mifos.group.api.v1.EventConstants;
 import io.mifos.group.api.v1.client.GroupManager;
 import io.mifos.group.api.v1.domain.AssignedEmployeeHolder;
@@ -38,8 +30,27 @@ import io.mifos.group.api.v1.domain.SignOffMeeting;
 import io.mifos.group.service.GroupConfiguration;
 import io.mifos.group.util.GroupDefinitionGenerator;
 import io.mifos.group.util.GroupGenerator;
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.*;
+import org.apache.fineract.cn.anubis.test.v1.TenantApplicationSecurityEnvironmentTestRule;
+import org.apache.fineract.cn.api.context.AutoUserContext;
+import org.apache.fineract.cn.test.env.TestEnvironment;
+import org.apache.fineract.cn.test.fixture.TenantDataStoreContextTestRule;
+import org.apache.fineract.cn.test.fixture.cassandra.CassandraInitializer;
+import org.apache.fineract.cn.test.fixture.mariadb.MariaDBInitializer;
+import org.apache.fineract.cn.test.listener.EnableEventRecording;
+import org.apache.fineract.cn.test.listener.EventRecorder;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
@@ -54,13 +65,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)

@@ -18,14 +18,16 @@
  */
 package io.mifos.group.service.rest;
 
-import io.mifos.anubis.annotation.AcceptedTokenType;
-import io.mifos.anubis.annotation.Permittable;
-import io.mifos.core.command.gateway.CommandGateway;
-import io.mifos.core.lang.ServiceException;
+import io.mifos.group.api.v1.domain.GroupDefinition;
 import io.mifos.group.service.ServiceConstants;
 import io.mifos.group.service.internal.command.CreateGroupDefinitionCommand;
 import io.mifos.group.service.internal.service.GroupDefinitionService;
-import io.mifos.group.api.v1.domain.GroupDefinition;
+import java.util.List;
+import javax.validation.Valid;
+import org.apache.fineract.cn.anubis.annotation.AcceptedTokenType;
+import org.apache.fineract.cn.anubis.annotation.Permittable;
+import org.apache.fineract.cn.command.gateway.CommandGateway;
+import org.apache.fineract.cn.lang.ServiceException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,9 +39,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/definitions")

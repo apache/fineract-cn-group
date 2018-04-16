@@ -18,19 +18,18 @@
  */
 package io.mifos.group.service.internal.command.handler;
 
-import io.mifos.core.command.annotation.Aggregate;
-import io.mifos.core.command.annotation.CommandHandler;
-import io.mifos.core.command.annotation.EventEmitter;
-import io.mifos.core.mariadb.domain.FlywayFactoryBean;
 import io.mifos.group.api.v1.EventConstants;
 import io.mifos.group.service.ServiceConstants;
 import io.mifos.group.service.internal.command.InitializeServiceCommand;
+import javax.sql.DataSource;
+import org.apache.fineract.cn.command.annotation.Aggregate;
+import org.apache.fineract.cn.command.annotation.CommandHandler;
+import org.apache.fineract.cn.command.annotation.EventEmitter;
+import org.apache.fineract.cn.mariadb.domain.FlywayFactoryBean;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.sql.DataSource;
 
 @SuppressWarnings("unused")
 @Aggregate

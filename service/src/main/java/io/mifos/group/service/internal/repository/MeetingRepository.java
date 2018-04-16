@@ -18,14 +18,13 @@
  */
 package io.mifos.group.service.internal.repository;
 
-import io.mifos.core.mariadb.util.LocalDateConverter;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import javax.persistence.Convert;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.Convert;
+import org.apache.fineract.cn.mariadb.util.LocalDateConverter;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MeetingRepository extends JpaRepository<MeetingEntity, Long> {

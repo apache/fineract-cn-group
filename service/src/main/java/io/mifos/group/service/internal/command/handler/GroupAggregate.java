@@ -18,12 +18,13 @@
  */
 package io.mifos.group.service.internal.command.handler;
 
-import io.mifos.core.api.util.UserContextHolder;
-import io.mifos.core.command.annotation.Aggregate;
-import io.mifos.core.command.annotation.CommandHandler;
-import io.mifos.core.command.annotation.EventEmitter;
-import io.mifos.core.lang.DateConverter;
-import io.mifos.core.lang.ServiceException;
+import io.mifos.group.api.v1.EventConstants;
+import io.mifos.group.api.v1.domain.Attendee;
+import io.mifos.group.api.v1.domain.Cycle;
+import io.mifos.group.api.v1.domain.Group;
+import io.mifos.group.api.v1.domain.GroupCommand;
+import io.mifos.group.api.v1.domain.GroupDefinition;
+import io.mifos.group.api.v1.domain.SignOffMeeting;
 import io.mifos.group.service.internal.command.ActivateGroupCommand;
 import io.mifos.group.service.internal.command.CloseGroupCommand;
 import io.mifos.group.service.internal.command.CreateGroupCommand;
@@ -33,6 +34,8 @@ import io.mifos.group.service.internal.command.SignOffMeetingCommand;
 import io.mifos.group.service.internal.command.UpdateAssignedEmployeeCommand;
 import io.mifos.group.service.internal.command.UpdateLeadersCommand;
 import io.mifos.group.service.internal.command.UpdateMembersCommand;
+import io.mifos.group.service.internal.mapper.AddressMapper;
+import io.mifos.group.service.internal.mapper.GroupCommandMapper;
 import io.mifos.group.service.internal.repository.AddressEntity;
 import io.mifos.group.service.internal.repository.AddressRepository;
 import io.mifos.group.service.internal.repository.AttendeeEntity;
@@ -45,14 +48,6 @@ import io.mifos.group.service.internal.repository.GroupEntity;
 import io.mifos.group.service.internal.repository.GroupRepository;
 import io.mifos.group.service.internal.repository.MeetingEntity;
 import io.mifos.group.service.internal.repository.MeetingRepository;
-import io.mifos.group.api.v1.EventConstants;
-import io.mifos.group.api.v1.domain.*;
-import io.mifos.group.service.internal.mapper.AddressMapper;
-import io.mifos.group.service.internal.mapper.GroupCommandMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -60,6 +55,15 @@ import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.fineract.cn.api.util.UserContextHolder;
+import org.apache.fineract.cn.command.annotation.Aggregate;
+import org.apache.fineract.cn.command.annotation.CommandHandler;
+import org.apache.fineract.cn.command.annotation.EventEmitter;
+import org.apache.fineract.cn.lang.DateConverter;
+import org.apache.fineract.cn.lang.ServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @SuppressWarnings("unused")
 @Aggregate

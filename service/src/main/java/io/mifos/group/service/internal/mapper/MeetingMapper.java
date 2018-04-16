@@ -18,9 +18,9 @@
  */
 package io.mifos.group.service.internal.mapper;
 
-import io.mifos.core.lang.DateConverter;
 import io.mifos.group.api.v1.domain.Meeting;
 import io.mifos.group.service.internal.repository.MeetingEntity;
+import org.apache.fineract.cn.lang.DateConverter;
 
 public class MeetingMapper {
 

@@ -18,16 +18,18 @@
  */
 package io.mifos.group.api.v1.client;
 
-import io.mifos.core.api.annotation.ThrowsException;
-import io.mifos.core.api.annotation.ThrowsExceptions;
-import io.mifos.core.api.util.CustomFeignClientsConfiguration;
 import io.mifos.group.api.v1.domain.AssignedEmployeeHolder;
-import io.mifos.group.api.v1.domain.SignOffMeeting;
 import io.mifos.group.api.v1.domain.Group;
 import io.mifos.group.api.v1.domain.GroupCommand;
 import io.mifos.group.api.v1.domain.GroupDefinition;
 import io.mifos.group.api.v1.domain.GroupPage;
 import io.mifos.group.api.v1.domain.Meeting;
+import io.mifos.group.api.v1.domain.SignOffMeeting;
+import java.util.List;
+import java.util.Set;
+import org.apache.fineract.cn.api.annotation.ThrowsException;
+import org.apache.fineract.cn.api.annotation.ThrowsExceptions;
+import org.apache.fineract.cn.api.util.CustomFeignClientsConfiguration;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,9 +39,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
-import java.util.Set;
 
 @SuppressWarnings("unused")
 @FeignClient(name="group-v1", path="/group/v1", configuration=CustomFeignClientsConfiguration.class)

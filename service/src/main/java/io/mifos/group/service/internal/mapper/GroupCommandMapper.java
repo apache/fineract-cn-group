@@ -18,13 +18,12 @@
  */
 package io.mifos.group.service.internal.mapper;
 
-import io.mifos.core.api.util.UserContextHolder;
-import io.mifos.core.lang.DateConverter;
-import io.mifos.group.service.internal.repository.GroupCommandEntity;
 import io.mifos.group.api.v1.domain.GroupCommand;
-
+import io.mifos.group.service.internal.repository.GroupCommandEntity;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import org.apache.fineract.cn.api.util.UserContextHolder;
+import org.apache.fineract.cn.lang.DateConverter;
 
 public class GroupCommandMapper {
 

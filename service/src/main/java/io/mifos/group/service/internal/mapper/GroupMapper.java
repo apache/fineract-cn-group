@@ -18,9 +18,9 @@
  */
 package io.mifos.group.service.internal.mapper;
 
-import io.mifos.core.lang.DateConverter;
-import io.mifos.group.service.internal.repository.GroupEntity;
 import io.mifos.group.api.v1.domain.Group;
+import io.mifos.group.service.internal.repository.GroupEntity;
+import org.apache.fineract.cn.lang.DateConverter;
 import org.springframework.util.StringUtils;
 
 public class GroupMapper {

@@ -18,9 +18,6 @@
  */
 package io.mifos.group.service.internal.service;
 
-import io.mifos.core.lang.ServiceException;
-import io.mifos.group.service.internal.repository.AttendeeRepository;
-import io.mifos.group.service.internal.repository.GroupRepository;
 import io.mifos.group.api.v1.domain.Group;
 import io.mifos.group.api.v1.domain.GroupCommand;
 import io.mifos.group.api.v1.domain.GroupPage;
@@ -31,22 +28,24 @@ import io.mifos.group.service.internal.mapper.AttendeeMapper;
 import io.mifos.group.service.internal.mapper.GroupCommandMapper;
 import io.mifos.group.service.internal.mapper.GroupMapper;
 import io.mifos.group.service.internal.mapper.MeetingMapper;
+import io.mifos.group.service.internal.repository.AttendeeRepository;
 import io.mifos.group.service.internal.repository.GroupCommandRepository;
 import io.mifos.group.service.internal.repository.GroupEntity;
+import io.mifos.group.service.internal.repository.GroupRepository;
 import io.mifos.group.service.internal.repository.MeetingEntity;
 import io.mifos.group.service.internal.repository.MeetingRepository;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.fineract.cn.lang.ServiceException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.time.Clock;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class GroupService {
