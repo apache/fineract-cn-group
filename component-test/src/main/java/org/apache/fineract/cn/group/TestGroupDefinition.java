@@ -21,7 +21,6 @@ package org.apache.fineract.cn.group;
 import org.apache.fineract.cn.group.api.v1.EventConstants;
 import org.apache.fineract.cn.group.api.v1.client.GroupManager;
 import org.apache.fineract.cn.group.api.v1.domain.GroupDefinition;
-import org.apache.fineract.cn.group.service.GroupConfiguration;
 import org.apache.fineract.cn.group.util.GroupDefinitionGenerator;
 import org.apache.fineract.cn.anubis.test.v1.TenantApplicationSecurityEnvironmentTestRule;
 import org.apache.fineract.cn.api.context.AutoUserContext;

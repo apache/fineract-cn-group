@@ -27,7 +27,6 @@ import org.apache.fineract.cn.group.api.v1.domain.GroupCommand;
 import org.apache.fineract.cn.group.api.v1.domain.GroupDefinition;
 import org.apache.fineract.cn.group.api.v1.domain.Meeting;
 import org.apache.fineract.cn.group.api.v1.domain.SignOffMeeting;
-import org.apache.fineract.cn.group.service.GroupConfiguration;
 import org.apache.fineract.cn.group.util.GroupDefinitionGenerator;
 import org.apache.fineract.cn.group.util.GroupGenerator;
 import java.time.Clock;
