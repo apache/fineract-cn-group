@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ echo 'DMnO30IXH6Ru9rfC2VHN3k6GpbjRjera' | http PUT 'http://localhost:8080/group/v1/groups/DMnO30IXH6Ru9rfC2VHN3k6GpbjRjera/leaders' 'Accept:application/json' 'Content-Type:application/json'
+----
