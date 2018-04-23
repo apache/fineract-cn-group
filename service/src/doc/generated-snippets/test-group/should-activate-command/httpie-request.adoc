@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ echo 'G3JyVMs1g6S5lNyA5whinxEuyM9tRkP6' | http POST 'http://localhost:8080/group/v1/groups/G3JyVMs1g6S5lNyA5whinxEuyM9tRkP6/commands' 'Accept:application/json' 'Content-Type:application/json'
+----
