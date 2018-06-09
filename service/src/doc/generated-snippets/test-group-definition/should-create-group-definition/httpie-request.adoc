@@ -1,4 +1,0 @@
-[source,bash]
-----
-$ echo 'f56iUIk58phhM1kgYJpSsXjoxrIESX7K' | http POST 'http://localhost:8080/group/v1/definitions' 'Accept:*/*' 'Content-Type:application/json'
-----

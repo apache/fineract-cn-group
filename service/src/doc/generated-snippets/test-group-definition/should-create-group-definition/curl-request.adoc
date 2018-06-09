@@ -1,4 +1,0 @@
-[source,bash]
-----
-$ curl 'http://localhost:8080/group/v1/definitions' -i -X POST -H 'Accept: */*' -H 'Content-Type: application/json' -d 'f56iUIk58phhM1kgYJpSsXjoxrIESX7K'
-----

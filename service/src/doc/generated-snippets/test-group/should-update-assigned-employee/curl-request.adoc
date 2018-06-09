@@ -1,4 +1,0 @@
-[source,bash]
-----
-$ curl 'http://localhost:8080/group/v1/groups/KsbSd2TGf95VYynRjiZfXiUX75ahKD8v/employee' -i -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json' -d 'KsbSd2TGf95VYynRjiZfXiUX75ahKD8v'
-----
