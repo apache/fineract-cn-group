@@ -18,6 +18,7 @@
  */
 package org.apache.fineract.cn.group.rest;
 
+import org.apache.fineract.cn.group.api.v1.PermittableGroupIds;
 import org.apache.fineract.cn.group.api.v1.domain.GroupDefinition;
 import org.apache.fineract.cn.group.ServiceConstants;
 import org.apache.fineract.cn.group.internal.command.CreateGroupDefinitionCommand;
@@ -58,7 +59,7 @@ public class GroupDefinitionRestController {
     this.groupDefinitionService = groupDefinitionService;
   }
 
-  @Permittable(AcceptedTokenType.TENANT)
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.DEFINITION)
   @RequestMapping(
       method = RequestMethod.POST,
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -76,7 +77,7 @@ public class GroupDefinitionRestController {
     return ResponseEntity.accepted().build();
   }
 
-  @Permittable(AcceptedTokenType.TENANT)
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.DEFINITION)
   @RequestMapping(
       method = RequestMethod.GET,
       consumes = MediaType.ALL_VALUE,
@@ -88,7 +89,7 @@ public class GroupDefinitionRestController {
     return ResponseEntity.ok(this.groupDefinitionService.fetchAllGroupDefinitions());
   }
 
-  @Permittable(AcceptedTokenType.TENANT)
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.DEFINITION)
   @RequestMapping(
       value = "/{identifier}",
       method = RequestMethod.GET,
