@@ -112,11 +112,11 @@ public class GroupRestController {
   public
   @ResponseBody
   ResponseEntity<GroupPage> fetchGroups(
-      @RequestParam("employee") final String employee,
-      @RequestParam("page") final Integer page,
-      @RequestParam("size") final Integer size,
-      @RequestParam("sortColumn") final String sortColumn,
-      @RequestParam("sortDirection") final String sortDirection) {
+      @RequestParam(value="employee",required=false) final String employee,
+      @RequestParam(value="page", required=false) final Integer page,
+      @RequestParam(value="size",required=false) final Integer size,
+      @RequestParam(value="sortColumn",required=false) final String sortColumn,
+      @RequestParam(value="sortDirection", required=false) final String sortDirection) {
     return ResponseEntity.ok(
         this.groupService.fetchGroups(employee, this.createPageRequest(page, size, sortColumn, sortDirection))
     );

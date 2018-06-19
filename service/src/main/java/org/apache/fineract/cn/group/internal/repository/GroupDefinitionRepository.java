@@ -19,12 +19,15 @@
 package org.apache.fineract.cn.group.internal.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
 public interface GroupDefinitionRepository extends JpaRepository<GroupDefinitionEntity, Long> {
-
+  @Query("SELECT CASE WHEN COUNT(c) > 0 THEN 'true' ELSE 'false' END FROM GroupDefinitionEntity c WHERE c.identifier = :identifier")
+  Boolean existsByIdentifier(@Param("identifier") final String identifier);
   Optional<GroupDefinitionEntity> findByIdentifier(final String identifier);
 }

@@ -93,11 +93,11 @@ public interface GroupManager {
       produces = MediaType.ALL_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE
   )
-  GroupPage fetchGroups(@RequestParam("employee") final String employee,
-                        @RequestParam("page") final Integer page,
-                        @RequestParam("size") final Integer size,
-                        @RequestParam("sortColumn") final String sortColumn,
-                        @RequestParam("sortDirection") final String sortDirection);
+  GroupPage fetchGroups(@RequestParam(value="employee", required=false) final String employee,
+                        @RequestParam(value="page", required=false) final Integer page,
+                        @RequestParam(value="size",required=false) final Integer size,
+                        @RequestParam(value="sortColumn", required=false) final String sortColumn,
+                        @RequestParam(value="sortDirection",required=false) final String sortDirection);
 
   @RequestMapping(
       value = "/groups/{identifier}",

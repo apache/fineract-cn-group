@@ -68,13 +68,19 @@ public class GroupDefinitionRestController {
   public
   @ResponseBody
   ResponseEntity<Void> createDefinition(@RequestBody @Valid final GroupDefinition groupDefinition) {
-    this.groupDefinitionService.findByIdentifier(groupDefinition.getIdentifier())
-        .ifPresent(gd -> {
-          throw ServiceException.conflict("Group definition {0} already exists.", gd.getIdentifier());
-        });
-
-    this.commandGateway.process(new CreateGroupDefinitionCommand(groupDefinition));
+    if (this.groupDefinitionService.groupDefinitionExists(groupDefinition.getIdentifier())) {
+      throw ServiceException.conflict("Group definition {0} already exists.", groupDefinition.getIdentifier());
+    }
+      this.commandGateway.process(new CreateGroupDefinitionCommand(groupDefinition));
     return ResponseEntity.accepted().build();
+
+//    this.groupDefinitionService.findByIdentifier(groupDefinition.getIdentifier())
+//        .ifPresent(gd -> {
+//          throw ServiceException.conflict("Group definition {0} already exists.", gd.getIdentifier());
+//        });
+//
+//    this.commandGateway.process(new CreateGroupDefinitionCommand(groupDefinition));
+//    return ResponseEntity.accepted().build();
   }
 
   @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.DEFINITION)
