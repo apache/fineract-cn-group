@@ -22,6 +22,7 @@ import org.apache.fineract.cn.group.api.v1.PermittableGroupIds;
 import org.apache.fineract.cn.group.api.v1.domain.GroupDefinition;
 import org.apache.fineract.cn.group.ServiceConstants;
 import org.apache.fineract.cn.group.internal.command.CreateGroupDefinitionCommand;
+import org.apache.fineract.cn.group.internal.command.UpdateGroupDefinitionCommand;
 import org.apache.fineract.cn.group.internal.service.GroupDefinitionService;
 import java.util.List;
 import javax.validation.Valid;
@@ -109,5 +110,23 @@ public class GroupDefinitionRestController {
     return this.groupDefinitionService.findByIdentifier(identifier)
         .map(ResponseEntity::ok)
         .orElseThrow(() -> ServiceException.notFound("Group definition {0} not found.", identifier));
+  }
+
+  @Permittable(value = AcceptedTokenType.TENANT, groupId = PermittableGroupIds.DEFINITION)
+  @RequestMapping(
+          value = "/definitions/{identifier}",
+          method = RequestMethod.PUT,
+          produces = MediaType.APPLICATION_JSON_VALUE,
+          consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  public
+  @ResponseBody
+  ResponseEntity<Void> updateGroupDefinition(@PathVariable("identifier") final String identifier, @RequestBody final GroupDefinition groupDefinition) {
+    if (this.groupDefinitionService.groupDefinitionExists(identifier)) {
+      this.commandGateway.process(new UpdateGroupDefinitionCommand(identifier, groupDefinition));
+    } else {
+      throw ServiceException.notFound("Group Definition {0} not found.", identifier);
+    }
+    return ResponseEntity.accepted().build();
   }
 }

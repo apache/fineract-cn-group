@@ -76,6 +76,18 @@ public interface GroupManager {
   List<GroupDefinition> fetchGroupDefinitions();
 
   @RequestMapping(
+          value = "/definitions/{identifier}",
+          method = RequestMethod.PUT,
+          produces = MediaType.APPLICATION_JSON_VALUE,
+          consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ThrowsExceptions({
+          @ThrowsException(status = HttpStatus.NOT_FOUND, exception = GroupDefinitionNotFound.class),
+          @ThrowsException(status = HttpStatus.BAD_REQUEST, exception = GroupDefinitionValidation.class)
+  })
+  void updateGroupDefinition(@PathVariable("identifier") final String identifier, @RequestBody final GroupDefinition groupDefinition);
+
+  @RequestMapping(
       value = "/groups",
       method = RequestMethod.POST,
       produces = MediaType.APPLICATION_JSON_VALUE,
