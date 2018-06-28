@@ -29,6 +29,8 @@ public interface EventConstants {
 
   String POST_GROUP_DEFINITION = "post-group-definition";
   String SELECTOR_POST_GROUP_DEFINITION = SELECTOR_NAME + " = '" + POST_GROUP_DEFINITION + "'";
+  String PUT_GROUP_DEFINITION = "put-group-definition";
+  String SELECTOR_PUT_GROUP_DEFINITION = SELECTOR_NAME + " = '" + PUT_GROUP_DEFINITION + "'";
 
   String POST_GROUP = "post-group";
   String SELECTOR_POST_GROUP = SELECTOR_NAME + " = '" + POST_GROUP + "'";

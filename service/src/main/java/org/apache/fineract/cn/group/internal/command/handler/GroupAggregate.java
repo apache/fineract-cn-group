@@ -29,6 +29,7 @@ import org.apache.fineract.cn.group.internal.command.ActivateGroupCommand;
 import org.apache.fineract.cn.group.internal.command.CloseGroupCommand;
 import org.apache.fineract.cn.group.internal.command.CreateGroupCommand;
 import org.apache.fineract.cn.group.internal.command.CreateGroupDefinitionCommand;
+import org.apache.fineract.cn.group.internal.command.UpdateGroupDefinitionCommand;
 import org.apache.fineract.cn.group.internal.command.ReopenGroupCommand;
 import org.apache.fineract.cn.group.internal.command.SignOffMeetingCommand;
 import org.apache.fineract.cn.group.internal.command.UpdateAssignedEmployeeCommand;
@@ -53,6 +54,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.fineract.cn.api.util.UserContextHolder;
@@ -111,6 +113,45 @@ public class GroupAggregate {
     this.groupDefinitionRepository.save(groupDefinitionEntity);
 
     return groupDefinition.getIdentifier();
+  }
+//
+//    @Transactional
+//    @CommandHandler
+//    @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.PUT_GROUP_DEFINITION)
+//    public String updateDefinition1(final UpdateGroupDefinitionCommand updateGroupDefinitionCommand) {
+//      final GroupDefinition updatedGroupDefinition = updateGroupDefinitionCommand.groupDefinition();
+//
+//        final Optional<GroupDefinitionEntity> groupDefinitionEntity = this.groupDefinitionRepository.findByIdentifier(updateGroupDefinitionCommand.identifier());
+//      groupDefinitionEntity.setDescription(updatedGroupDefinition.getDescription());
+//        groupDefinitionEntity.setMinimalSize(updatedGroupDefinition.getMinimalSize());
+//        groupDefinitionEntity.setMaximalSize(updatedGroupDefinition.getMaximalSize());
+//        final Cycle cycle = updatedGroupDefinition.getCycle();
+//        groupDefinitionEntity.setNumberOfMeetings(cycle.getNumberOfMeetings());
+//        groupDefinitionEntity.setFrequency(cycle.getFrequency());
+//        groupDefinitionEntity.setAdjustment(cycle.getAdjustment());
+//
+//        this.groupDefinitionRepository.save(groupDefinitionEntity);
+//
+//        return updatedGroupDefinition.getIdentifier();
+//    }
+
+  @Transactional
+  @CommandHandler
+  @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.PUT_GROUP)
+  public String updateDefinition(final UpdateGroupDefinitionCommand updateGroupDefinitionCommand) {
+    final GroupDefinition updatedGroupDefinition = updateGroupDefinitionCommand.groupDefinition();
+    final Cycle cycle = updatedGroupDefinition.getCycle();
+    this.groupDefinitionRepository.findByIdentifier(updateGroupDefinitionCommand.identifier())
+            .ifPresent(groupDefinitionEntity -> {
+              groupDefinitionEntity.setDescription(updatedGroupDefinition.getDescription());
+              groupDefinitionEntity.setMinimalSize(updatedGroupDefinition.getMinimalSize());
+              groupDefinitionEntity.setMaximalSize(updatedGroupDefinition.getMaximalSize());
+              groupDefinitionEntity.setNumberOfMeetings(cycle.getNumberOfMeetings());
+              groupDefinitionEntity.setFrequency(cycle.getFrequency());
+              groupDefinitionEntity.setAdjustment(cycle.getAdjustment());
+              this.groupDefinitionRepository.save(groupDefinitionEntity);
+            });
+    return updateGroupDefinitionCommand.identifier();
   }
 
   @Transactional
