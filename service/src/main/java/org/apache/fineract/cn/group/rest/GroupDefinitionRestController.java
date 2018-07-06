@@ -121,7 +121,7 @@ public class GroupDefinitionRestController {
   )
   public
   @ResponseBody
-  ResponseEntity<Void> updateGroupDefinition(@PathVariable("identifier") final String identifier, @RequestBody final GroupDefinition groupDefinition) {
+  ResponseEntity<Void> updateDefinition(@PathVariable("identifier") final String identifier, @RequestBody final GroupDefinition groupDefinition) {
     if (this.groupDefinitionService.groupDefinitionExists(identifier)) {
       this.commandGateway.process(new UpdateGroupDefinitionCommand(identifier, groupDefinition));
     } else {
