@@ -191,21 +191,21 @@ public class GroupAggregate {
   @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.PUT_GROUP)
   public String updateGroup(final UpdateGroupCommand updateGroupCommand) {
       final Group group = updateGroupCommand.group();
-      final GroupDefinitionEntity groupDefinitionEntity =
-              this.groupDefinitionRepository.findByIdentifier(group.getGroupDefinitionIdentifier())
-                      .orElseThrow(
-                              () -> ServiceException.notFound("Group definition {0} not found.", group.getGroupDefinitionIdentifier())
-                      );
+      //final GroupDefinitionEntity groupDefinitionEntity =
+        //      this.groupDefinitionRepository.findByIdentifier(group.getGroupDefinitionIdentifier())
+          //            .orElseThrow(
+            //                  () -> ServiceException.notFound("Group definition {0} not found.", group.getGroupDefinitionIdentifier())
+              //        );
 
       final AddressEntity savedAddress = this.addressRepository.save(AddressMapper.map(group.getAddress()));
       final GroupEntity groupEntity = findGroupEntityOrThrow(group.getIdentifier());
 
-      groupEntity.setGroupDefinition(groupDefinitionEntity);
-      groupEntity.setIdentifier(group.getIdentifier());
+     // groupEntity.setGroupDefinition(groupDefinitionEntity);
+     // groupEntity.setIdentifier(group.getIdentifier());
       groupEntity.setName(group.getName());
       groupEntity.setOffice(group.getOffice());
       groupEntity.setWeekday(group.getWeekday());
-      groupEntity.setGroupStatus(group.getStatus());
+     // groupEntity.setGroupStatus(group.getStatus());
       //groupEntity.setAddressEntity(group.getAddress());
 
       if (group.getAssignedEmployee() != null) {
