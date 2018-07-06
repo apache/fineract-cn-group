@@ -34,6 +34,7 @@ import org.apache.fineract.cn.group.internal.command.SignOffMeetingCommand;
 import org.apache.fineract.cn.group.internal.command.UpdateAssignedEmployeeCommand;
 import org.apache.fineract.cn.group.internal.command.UpdateLeadersCommand;
 import org.apache.fineract.cn.group.internal.command.UpdateMembersCommand;
+import org.apache.fineract.cn.group.internal.command.UpdateGroupCommand;
 import org.apache.fineract.cn.group.internal.service.GroupDefinitionService;
 import org.apache.fineract.cn.group.internal.service.GroupService;
 import java.util.List;
@@ -135,6 +136,26 @@ public class GroupRestController {
     return this.groupService.findByIdentifier(identifier)
         .map(ResponseEntity::ok)
         .orElseThrow(() -> ServiceException.notFound("Group {0} not found.", identifier));
+  }
+
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)
+  @RequestMapping(
+          value = "/{identifier}",
+          method = RequestMethod.PUT,
+          consumes = MediaType.ALL_VALUE,
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+
+  public
+  @ResponseBody
+  ResponseEntity<Void> updateGroup(@PathVariable("identifier") final String identifier,
+                                      @RequestBody final Group group) {
+    this.groupService.findByIdentifier(identifier)
+            .orElseThrow(() -> ServiceException.notFound("Group {0} not found.", identifier));
+
+    this.commandGateway.process(new UpdateGroupCommand(group));
+
+    return ResponseEntity.accepted().build();
   }
 
   @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)

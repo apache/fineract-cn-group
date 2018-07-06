@@ -121,6 +121,19 @@ public interface GroupManager {
   Group findGroup(@PathVariable("identifier") final String identifier);
 
   @RequestMapping(
+          value = "/groups/{identifier}",
+          method = RequestMethod.PUT,
+          produces = MediaType.APPLICATION_JSON_VALUE,
+          consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ThrowsExceptions({
+          @ThrowsException(status = HttpStatus.NOT_FOUND, exception = GroupNotFoundException.class),
+          @ThrowsException(status = HttpStatus.BAD_REQUEST, exception = GroupValidationException.class)
+  })
+  void updateGroup(@PathVariable("identifier") final String identifier, @RequestBody final Group group);
+
+
+  @RequestMapping(
       value = "/groups/{identifier}/leaders",
       method = RequestMethod.PUT,
       produces = MediaType.APPLICATION_JSON_VALUE,

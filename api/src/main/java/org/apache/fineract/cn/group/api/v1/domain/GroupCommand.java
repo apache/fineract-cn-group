@@ -18,7 +18,7 @@
  */
 package org.apache.fineract.cn.group.api.v1.domain;
 
-public class GroupCommand {
+public class    GroupCommand {
 
   private Action action;
   private String note;

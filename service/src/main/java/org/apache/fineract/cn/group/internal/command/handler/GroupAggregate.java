@@ -35,6 +35,7 @@ import org.apache.fineract.cn.group.internal.command.SignOffMeetingCommand;
 import org.apache.fineract.cn.group.internal.command.UpdateAssignedEmployeeCommand;
 import org.apache.fineract.cn.group.internal.command.UpdateLeadersCommand;
 import org.apache.fineract.cn.group.internal.command.UpdateMembersCommand;
+import org.apache.fineract.cn.group.internal.command.UpdateGroupCommand;
 import org.apache.fineract.cn.group.internal.mapper.AddressMapper;
 import org.apache.fineract.cn.group.internal.mapper.GroupCommandMapper;
 import org.apache.fineract.cn.group.internal.repository.AddressEntity;
@@ -184,6 +185,49 @@ public class GroupAggregate {
     return group.getIdentifier();
   }
 
+  // Updating Group
+  @Transactional
+  @CommandHandler
+  @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.PUT_GROUP)
+  public String updateGroup(final UpdateGroupCommand updateGroupCommand) {
+      final Group group = updateGroupCommand.group();
+      final GroupDefinitionEntity groupDefinitionEntity =
+              this.groupDefinitionRepository.findByIdentifier(group.getGroupDefinitionIdentifier())
+                      .orElseThrow(
+                              () -> ServiceException.notFound("Group definition {0} not found.", group.getGroupDefinitionIdentifier())
+                      );
+
+      final AddressEntity savedAddress = this.addressRepository.save(AddressMapper.map(group.getAddress()));
+      final GroupEntity groupEntity = findGroupEntityOrThrow(group.getIdentifier());
+
+      groupEntity.setGroupDefinition(groupDefinitionEntity);
+      groupEntity.setIdentifier(group.getIdentifier());
+      groupEntity.setName(group.getName());
+      groupEntity.setOffice(group.getOffice());
+      groupEntity.setWeekday(group.getWeekday());
+      groupEntity.setGroupStatus(group.getStatus());
+      //groupEntity.setAddressEntity(group.getAddress());
+
+      if (group.getAssignedEmployee() != null) {
+          this.updateAssignedEmployee(new UpdateAssignedEmployeeCommand(group.getIdentifier(), group.getAssignedEmployee()));
+      }
+
+      if (group.getLeaders() != null) {
+          this.updateLeaders(new UpdateLeadersCommand(group.getIdentifier(), group.getLeaders()));
+      }
+
+      if (group.getMembers() != null) {
+          this.updateMembers(new UpdateMembersCommand(group.getIdentifier(), group.getMembers()));
+      }
+
+
+      groupEntity.setLastModifiedBy(UserContextHolder.checkedGetUser());
+      groupEntity.setLastModifiedOn(LocalDateTime.now(Clock.systemUTC()));
+
+      this.groupRepository.save(groupEntity);
+
+      return group.getIdentifier();
+  }
   @Transactional
   @CommandHandler
   @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.ACTIVATE_GROUP)
@@ -377,4 +421,9 @@ public class GroupAggregate {
     groupCommandEntity.setGroup(groupEntity);
     this.groupCommandRepository.save(groupCommandEntity);
   }
+
+    private GroupEntity findGroupEntityOrThrow(String identifier) {
+        return this.groupRepository.findByIdentifier(identifier)
+                .orElseThrow(() -> ServiceException.notFound("Group ''{0}'' not found", identifier));
+    }
 }
