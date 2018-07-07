@@ -138,22 +138,22 @@ public class GroupAggregate {
 
   @Transactional
   @CommandHandler
-  @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.PUT_GROUP)
+  @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.PUT_GROUP_DEFINITION)
   public String updateDefinition(final UpdateGroupDefinitionCommand updateGroupDefinitionCommand) {
-    final GroupDefinition updatedGroupDefinition = updateGroupDefinitionCommand.groupDefinition();
-    final Cycle cycle = updatedGroupDefinition.getCycle();
-    this.groupDefinitionRepository.findByIdentifier(updateGroupDefinitionCommand.identifier())
-            .ifPresent(groupDefinitionEntity -> {
-              groupDefinitionEntity.setDescription(updatedGroupDefinition.getDescription());
-              groupDefinitionEntity.setMinimalSize(updatedGroupDefinition.getMinimalSize());
-              groupDefinitionEntity.setMaximalSize(updatedGroupDefinition.getMaximalSize());
-              groupDefinitionEntity.setNumberOfMeetings(cycle.getNumberOfMeetings());
-              groupDefinitionEntity.setFrequency(cycle.getFrequency());
-              groupDefinitionEntity.setAdjustment(cycle.getAdjustment());
-              this.groupDefinitionRepository.save(groupDefinitionEntity);
-            });
-    return updateGroupDefinitionCommand.identifier();
-  }
+      final GroupDefinition updatedGroupDefinition = updateGroupDefinitionCommand.groupDefinition();
+      final Cycle cycle = updatedGroupDefinition.getCycle();
+      this.groupDefinitionRepository.findByIdentifier(updateGroupDefinitionCommand.identifier())
+          .ifPresent(groupDefinitionEntity -> {
+                groupDefinitionEntity.setDescription(updatedGroupDefinition.getDescription());
+                groupDefinitionEntity.setMinimalSize(updatedGroupDefinition.getMinimalSize());
+                groupDefinitionEntity.setMaximalSize(updatedGroupDefinition.getMaximalSize());
+                groupDefinitionEntity.setNumberOfMeetings(cycle.getNumberOfMeetings());
+                groupDefinitionEntity.setFrequency(cycle.getFrequency());
+                groupDefinitionEntity.setAdjustment(cycle.getAdjustment());
+                this.groupDefinitionRepository.save(groupDefinitionEntity);
+          });
+         return updatedGroupDefinition.getIdentifier();
+      }
 
   @Transactional
   @CommandHandler
@@ -312,7 +312,7 @@ public class GroupAggregate {
 
   @Transactional
   @CommandHandler
-  @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.PUT_GROUP)
+  @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.PUT_MEETING)
   public String signOffMeeting(final SignOffMeetingCommand signOffMeetingCommand) {
     this.groupRepository.findByIdentifier(signOffMeetingCommand.groupIdentifier())
         .ifPresent(groupEntity -> {
