@@ -140,19 +140,19 @@ public class GroupAggregate {
   @CommandHandler
   @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.PUT_GROUP_DEFINITION)
   public String updateDefinition(final UpdateGroupDefinitionCommand updateGroupDefinitionCommand) {
-      final GroupDefinition updatedGroupDefinition = updateGroupDefinitionCommand.groupDefinition();
-      final Cycle cycle = updatedGroupDefinition.getCycle();
-      this.groupDefinitionRepository.findByIdentifier(updateGroupDefinitionCommand.identifier())
-          .ifPresent(groupDefinitionEntity -> {
-                groupDefinitionEntity.setDescription(updatedGroupDefinition.getDescription());
-                groupDefinitionEntity.setMinimalSize(updatedGroupDefinition.getMinimalSize());
-                groupDefinitionEntity.setMaximalSize(updatedGroupDefinition.getMaximalSize());
+      final GroupDefinition groupDefinition = updateGroupDefinitionCommand.groupDefinition();
+      final Cycle cycle = groupDefinition.getCycle();
+      final GroupDefinitionEntity groupDefinitionEntity = findGroupDefinitionEntityOrThrow(groupDefinition.getIdentifier());
+
+                groupDefinitionEntity.setDescription(groupDefinition.getDescription());
+                groupDefinitionEntity.setMinimalSize(groupDefinition.getMinimalSize());
+                groupDefinitionEntity.setMaximalSize(groupDefinition.getMaximalSize());
                 groupDefinitionEntity.setNumberOfMeetings(cycle.getNumberOfMeetings());
                 groupDefinitionEntity.setFrequency(cycle.getFrequency());
                 groupDefinitionEntity.setAdjustment(cycle.getAdjustment());
                 this.groupDefinitionRepository.save(groupDefinitionEntity);
-          });
-         return updatedGroupDefinition.getIdentifier();
+
+         return groupDefinition.getIdentifier();
       }
 
   @Transactional
@@ -191,12 +191,6 @@ public class GroupAggregate {
   @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.PUT_GROUP)
   public String updateGroup(final UpdateGroupCommand updateGroupCommand) {
       final Group group = updateGroupCommand.group();
-      //final GroupDefinitionEntity groupDefinitionEntity =
-        //      this.groupDefinitionRepository.findByIdentifier(group.getGroupDefinitionIdentifier())
-          //            .orElseThrow(
-            //                  () -> ServiceException.notFound("Group definition {0} not found.", group.getGroupDefinitionIdentifier())
-              //        );
-
       final AddressEntity savedAddress = this.addressRepository.save(AddressMapper.map(group.getAddress()));
       final GroupEntity groupEntity = findGroupEntityOrThrow(group.getIdentifier());
 
@@ -425,5 +419,10 @@ public class GroupAggregate {
     private GroupEntity findGroupEntityOrThrow(String identifier) {
         return this.groupRepository.findByIdentifier(identifier)
                 .orElseThrow(() -> ServiceException.notFound("Group ''{0}'' not found", identifier));
+    }
+
+    private GroupDefinitionEntity findGroupDefinitionEntityOrThrow(String identifier) {
+        return this.groupDefinitionRepository.findByIdentifier(identifier)
+                .orElseThrow(() -> ServiceException.notFound("GroupDefinition ''{0}'' not found", identifier));
     }
 }

@@ -22,17 +22,12 @@ import org.apache.fineract.cn.group.api.v1.domain.GroupDefinition;
 
 public class UpdateGroupDefinitionCommand {
 
-    private final String identifier;
+
     private final GroupDefinition groupDefinition;
 
-    public UpdateGroupDefinitionCommand(final String identifier, final GroupDefinition groupDefinition) {
+    public UpdateGroupDefinitionCommand( final GroupDefinition groupDefinition) {
         super();
-        this.identifier = identifier;
         this.groupDefinition = groupDefinition;
-    }
-
-    public String identifier() {
-        return this.identifier;
     }
 
     public GroupDefinition groupDefinition() {

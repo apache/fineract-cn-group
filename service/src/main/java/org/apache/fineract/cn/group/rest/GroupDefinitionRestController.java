@@ -122,11 +122,19 @@ public class GroupDefinitionRestController {
   public
   @ResponseBody
   ResponseEntity<Void> updateGroupDefinition(@PathVariable("identifier") final String identifier, @RequestBody final GroupDefinition groupDefinition) {
-    if (this.groupDefinitionService.groupDefinitionExists(identifier)) {
-      this.commandGateway.process(new UpdateGroupDefinitionCommand(identifier, groupDefinition));
-    } else {
-      throw ServiceException.notFound("Group Definition {0} not found.", identifier);
-    }
+    this.groupDefinitionService.findByIdentifier(identifier)
+            .orElseThrow(() -> ServiceException.notFound("Group Definition {0} not found.", identifier));
+
+    this.commandGateway.process(new UpdateGroupDefinitionCommand(groupDefinition));
+
     return ResponseEntity.accepted().build();
   }
+
+    // if (this.groupDefinitionService.groupDefinitionExists(identifier)) {
+     // this.commandGateway.process(new UpdateGroupDefinitionCommand(identifier, groupDefinition));
+    //} else {
+      //throw ServiceException.notFound("Group Definition {0} not found.", identifier);
+    //}
+    //return ResponseEntity.accepted().build();
+ // }
 }
