@@ -114,7 +114,7 @@ public class GroupDefinitionRestController {
 
   @Permittable(value = AcceptedTokenType.TENANT, groupId = PermittableGroupIds.DEFINITION)
   @RequestMapping(
-          value = "/definitions/{identifier}",
+          value = "/{identifier}",
           method = RequestMethod.PUT,
           produces = MediaType.APPLICATION_JSON_VALUE,
           consumes = MediaType.APPLICATION_JSON_VALUE
