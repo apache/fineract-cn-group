@@ -65,55 +65,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class TestGroup {
-  private static final String APP_NAME = "group-v1";
-  private static final String TEST_USER = "ranefer";
-
-  private final static TestEnvironment testEnvironment = new TestEnvironment(APP_NAME);
-  private final static CassandraInitializer cassandraInitializer = new CassandraInitializer();
-  private final static MariaDBInitializer mariaDBInitializer = new MariaDBInitializer();
-  private final static TenantDataStoreContextTestRule tenantDataStoreContext = TenantDataStoreContextTestRule.forRandomTenantName(cassandraInitializer, mariaDBInitializer);
-
-  @ClassRule
-  public static TestRule orderClassRules = RuleChain
-          .outerRule(testEnvironment)
-          .around(cassandraInitializer)
-          .around(mariaDBInitializer)
-          .around(tenantDataStoreContext);
-
-  @Rule
-  public final TenantApplicationSecurityEnvironmentTestRule tenantApplicationSecurityEnvironment
-          = new TenantApplicationSecurityEnvironmentTestRule(testEnvironment, this::waitForInitialize);
-  @Autowired
-  private GroupManager testSubject;
-  @Autowired
-  private EventRecorder eventRecorder;
-
-  private AutoUserContext userContext;
-
-  public TestGroup() {
-    super();
-  }
-
-  @Before
-  public void prepTest() {
-    userContext = this.tenantApplicationSecurityEnvironment.createAutoUserContext(TestGroup.TEST_USER);
-  }
-
-  @After
-  public void cleanTest() {
-    userContext.close();
-  }
-
-  public boolean waitForInitialize() {
-    try {
-      return this.eventRecorder.wait(EventConstants.INITIALIZE, EventConstants.INITIALIZE);
-    } catch (final InterruptedException e) {
-      throw new IllegalStateException(e);
-    }
-  }
+public class TestGroup extends AbstractGroupTest {
 
   @Test
   public void shouldCreateGroup() throws Exception {
@@ -260,22 +212,5 @@ public class TestGroup {
 
     final Group fetchedGroup = this.testSubject.findGroup(randomGroup.getIdentifier());
     Assert.assertEquals(anotherEmployee.getIdentifier(), fetchedGroup.getAssignedEmployee());
-  }
-
-  @Configuration
-  @EnableEventRecording
-  @EnableFeignClients(basePackages = {"org.apache.fineract.cn.group.api.v1.client"})
-  @RibbonClient(name = APP_NAME)
-  @Import({GroupConfiguration.class})
-  @ComponentScan("org.apache.fineract.cn.group.listener")
-  public static class TestConfiguration {
-    public TestConfiguration() {
-      super();
-    }
-
-    @Bean()
-    public Logger logger() {
-      return LoggerFactory.getLogger("test-logger");
-    }
   }
 }

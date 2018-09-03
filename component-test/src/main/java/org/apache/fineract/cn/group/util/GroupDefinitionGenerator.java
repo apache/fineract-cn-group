@@ -30,8 +30,8 @@ public class GroupDefinitionGenerator {
 
   public static GroupDefinition createRandomGroupDefinition() {
     final GroupDefinition groupDefinition = new GroupDefinition();
-    groupDefinition.setIdentifier(RandomStringUtils.randomAlphanumeric(32));
-    groupDefinition.setDescription(RandomStringUtils.randomAlphabetic(2048));
+    groupDefinition.setIdentifier("grpDef" + RandomStringUtils.randomAlphanumeric(3));
+    groupDefinition.setDescription("Group Descr " + RandomStringUtils.randomAlphabetic(5));
     groupDefinition.setMinimalSize(10);
     groupDefinition.setMaximalSize(30);
     final Cycle cycle = new Cycle();

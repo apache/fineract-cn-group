@@ -33,7 +33,7 @@ public class GroupGenerator {
 
   public static Group createRandomGroup(final String definitionIdentifier) {
     final Group group = new Group();
-    group.setIdentifier(RandomStringUtils.randomAlphanumeric(32));
+    group.setIdentifier("grp" + RandomStringUtils.randomAlphanumeric(3));
     group.setGroupDefinitionIdentifier(definitionIdentifier);
     group.setName(RandomStringUtils.randomAlphanumeric(256));
     group.setOffice(RandomStringUtils.randomAlphanumeric(32));
@@ -42,11 +42,7 @@ public class GroupGenerator {
         RandomStringUtils.randomAlphanumeric(32), RandomStringUtils.randomAlphanumeric(32)
     )));
     group.setMembers(new HashSet<>(Arrays.asList(
-        RandomStringUtils.randomAlphanumeric(32), RandomStringUtils.randomAlphanumeric(32),
-        RandomStringUtils.randomAlphanumeric(32), RandomStringUtils.randomAlphanumeric(32),
-        RandomStringUtils.randomAlphanumeric(32), RandomStringUtils.randomAlphanumeric(32),
-        RandomStringUtils.randomAlphanumeric(32), RandomStringUtils.randomAlphanumeric(32),
-        RandomStringUtils.randomAlphanumeric(32), RandomStringUtils.randomAlphanumeric(32)
+        "Member" + RandomStringUtils.randomAlphanumeric(3), "Member" + RandomStringUtils.randomAlphanumeric(3)
     )));
     group.setWeekday(Group.Weekday.WEDNESDAY.getValue());
     final Address address = new Address();
