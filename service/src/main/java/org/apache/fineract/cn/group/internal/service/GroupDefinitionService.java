@@ -45,6 +45,10 @@ public class GroupDefinitionService {
     this.groupDefinitionRepository = groupDefinitionRepository;
   }
 
+  public Boolean groupDefinitionExists(final String identifier) {
+    return this.groupDefinitionRepository.existsByIdentifier(identifier);
+  }
+
   public Optional<GroupDefinition> findByIdentifier(final String identifier) {
     return this.groupDefinitionRepository.findByIdentifier(identifier).map(GroupDefinitionMapper::map);
   }

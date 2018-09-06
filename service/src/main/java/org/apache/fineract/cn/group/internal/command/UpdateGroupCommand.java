@@ -16,18 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.fineract.cn.group.internal.repository;
+package org.apache.fineract.cn.group.internal.command;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.apache.fineract.cn.group.api.v1.domain.Group;
 
-import java.util.Optional;
+public class UpdateGroupCommand {
 
-@Repository
-public interface GroupDefinitionRepository extends JpaRepository<GroupDefinitionEntity, Long> {
-  @Query("SELECT CASE WHEN COUNT(c) > 0 THEN 'true' ELSE 'false' END FROM GroupDefinitionEntity c WHERE c.identifier = :identifier")
-  Boolean existsByIdentifier(@Param("identifier") final String identifier);
-  Optional<GroupDefinitionEntity> findByIdentifier(final String identifier);
+    private final Group group;
+
+    public UpdateGroupCommand(final Group group) {
+        super();
+        this.group = group;
+    }
+
+    public Group group() {
+        return this.group;
+    }
 }

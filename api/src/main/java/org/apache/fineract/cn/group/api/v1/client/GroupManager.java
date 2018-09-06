@@ -76,6 +76,18 @@ public interface GroupManager {
   List<GroupDefinition> fetchGroupDefinitions();
 
   @RequestMapping(
+          value = "/definitions/{identifier}",
+          method = RequestMethod.PUT,
+          produces = MediaType.APPLICATION_JSON_VALUE,
+          consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ThrowsExceptions({
+          @ThrowsException(status = HttpStatus.NOT_FOUND, exception = GroupDefinitionNotFound.class),
+          @ThrowsException(status = HttpStatus.BAD_REQUEST, exception = GroupDefinitionValidation.class)
+  })
+  void updateGroupDefinition(@PathVariable("identifier") final String identifier, @RequestBody final GroupDefinition groupDefinition);
+
+  @RequestMapping(
       value = "/groups",
       method = RequestMethod.POST,
       produces = MediaType.APPLICATION_JSON_VALUE,
@@ -93,11 +105,11 @@ public interface GroupManager {
       produces = MediaType.ALL_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE
   )
-  GroupPage fetchGroups(@RequestParam("employee") final String employee,
-                        @RequestParam("page") final Integer page,
-                        @RequestParam("size") final Integer size,
-                        @RequestParam("sortColumn") final String sortColumn,
-                        @RequestParam("sortDirection") final String sortDirection);
+  GroupPage fetchGroups(@RequestParam(value="employee", required=false) final String employee,
+                        @RequestParam(value="page", required=false) final Integer page,
+                        @RequestParam(value="size",required=false) final Integer size,
+                        @RequestParam(value="sortColumn", required=false) final String sortColumn,
+                        @RequestParam(value="sortDirection",required=false) final String sortDirection);
 
   @RequestMapping(
       value = "/groups/{identifier}",
@@ -107,6 +119,19 @@ public interface GroupManager {
   )
   @ThrowsException(status = HttpStatus.NOT_FOUND, exception = GroupNotFoundException.class)
   Group findGroup(@PathVariable("identifier") final String identifier);
+
+  @RequestMapping(
+          value = "/groups/{identifier}",
+          method = RequestMethod.PUT,
+          produces = MediaType.APPLICATION_JSON_VALUE,
+          consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ThrowsExceptions({
+          @ThrowsException(status = HttpStatus.NOT_FOUND, exception = GroupNotFoundException.class),
+          @ThrowsException(status = HttpStatus.BAD_REQUEST, exception = GroupValidationException.class)
+  })
+  void updateGroup(@PathVariable("identifier") final String identifier, @RequestBody final Group group);
+
 
   @RequestMapping(
       value = "/groups/{identifier}/leaders",

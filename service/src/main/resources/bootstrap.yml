@@ -19,4 +19,4 @@
 
 spring:
     application:
-        name: group-api
+        name: group-v1

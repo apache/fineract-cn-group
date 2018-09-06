@@ -1,5 +1,7 @@
 .gradle
 .idea
+.project
+.settings
 **/build/
 **/target/
 

@@ -18,9 +18,11 @@
  */
 package org.apache.fineract.cn.group.rest;
 
+import org.apache.fineract.cn.group.api.v1.PermittableGroupIds;
 import org.apache.fineract.cn.group.api.v1.domain.GroupDefinition;
 import org.apache.fineract.cn.group.ServiceConstants;
 import org.apache.fineract.cn.group.internal.command.CreateGroupDefinitionCommand;
+import org.apache.fineract.cn.group.internal.command.UpdateGroupDefinitionCommand;
 import org.apache.fineract.cn.group.internal.service.GroupDefinitionService;
 import java.util.List;
 import javax.validation.Valid;
@@ -58,7 +60,7 @@ public class GroupDefinitionRestController {
     this.groupDefinitionService = groupDefinitionService;
   }
 
-  @Permittable(AcceptedTokenType.TENANT)
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.DEFINITION)
   @RequestMapping(
       method = RequestMethod.POST,
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -67,16 +69,22 @@ public class GroupDefinitionRestController {
   public
   @ResponseBody
   ResponseEntity<Void> createDefinition(@RequestBody @Valid final GroupDefinition groupDefinition) {
-    this.groupDefinitionService.findByIdentifier(groupDefinition.getIdentifier())
-        .ifPresent(gd -> {
-          throw ServiceException.conflict("Group definition {0} already exists.", gd.getIdentifier());
-        });
-
-    this.commandGateway.process(new CreateGroupDefinitionCommand(groupDefinition));
+    if (this.groupDefinitionService.groupDefinitionExists(groupDefinition.getIdentifier())) {
+      throw ServiceException.conflict("Group definition {0} already exists.", groupDefinition.getIdentifier());
+    }
+      this.commandGateway.process(new CreateGroupDefinitionCommand(groupDefinition));
     return ResponseEntity.accepted().build();
+
+//    this.groupDefinitionService.findByIdentifier(groupDefinition.getIdentifier())
+//        .ifPresent(gd -> {
+//          throw ServiceException.conflict("Group definition {0} already exists.", gd.getIdentifier());
+//        });
+//
+//    this.commandGateway.process(new CreateGroupDefinitionCommand(groupDefinition));
+//    return ResponseEntity.accepted().build();
   }
 
-  @Permittable(AcceptedTokenType.TENANT)
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.DEFINITION)
   @RequestMapping(
       method = RequestMethod.GET,
       consumes = MediaType.ALL_VALUE,
@@ -88,7 +96,7 @@ public class GroupDefinitionRestController {
     return ResponseEntity.ok(this.groupDefinitionService.fetchAllGroupDefinitions());
   }
 
-  @Permittable(AcceptedTokenType.TENANT)
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.DEFINITION)
   @RequestMapping(
       value = "/{identifier}",
       method = RequestMethod.GET,
@@ -103,4 +111,30 @@ public class GroupDefinitionRestController {
         .map(ResponseEntity::ok)
         .orElseThrow(() -> ServiceException.notFound("Group definition {0} not found.", identifier));
   }
+
+  @Permittable(value = AcceptedTokenType.TENANT, groupId = PermittableGroupIds.DEFINITION)
+  @RequestMapping(
+          value = "/{identifier}",
+          method = RequestMethod.PUT,
+          produces = MediaType.APPLICATION_JSON_VALUE,
+          consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  public
+  @ResponseBody
+  ResponseEntity<Void> updateGroupDefinition(@PathVariable("identifier") final String identifier, @RequestBody final GroupDefinition groupDefinition) {
+    this.groupDefinitionService.findByIdentifier(identifier)
+            .orElseThrow(() -> ServiceException.notFound("Group Definition {0} not found.", identifier));
+
+    this.commandGateway.process(new UpdateGroupDefinitionCommand(groupDefinition));
+
+    return ResponseEntity.accepted().build();
+  }
+
+    // if (this.groupDefinitionService.groupDefinitionExists(identifier)) {
+     // this.commandGateway.process(new UpdateGroupDefinitionCommand(identifier, groupDefinition));
+    //} else {
+      //throw ServiceException.notFound("Group Definition {0} not found.", identifier);
+    //}
+    //return ResponseEntity.accepted().build();
+ // }
 }

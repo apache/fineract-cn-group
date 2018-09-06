@@ -25,6 +25,7 @@ import org.apache.fineract.cn.group.api.v1.domain.GroupPage;
 import org.apache.fineract.cn.group.api.v1.domain.Meeting;
 import org.apache.fineract.cn.group.api.v1.domain.SignOffMeeting;
 import org.apache.fineract.cn.group.ServiceConstants;
+import org.apache.fineract.cn.group.api.v1.PermittableGroupIds;
 import org.apache.fineract.cn.group.internal.command.ActivateGroupCommand;
 import org.apache.fineract.cn.group.internal.command.CloseGroupCommand;
 import org.apache.fineract.cn.group.internal.command.CreateGroupCommand;
@@ -33,6 +34,7 @@ import org.apache.fineract.cn.group.internal.command.SignOffMeetingCommand;
 import org.apache.fineract.cn.group.internal.command.UpdateAssignedEmployeeCommand;
 import org.apache.fineract.cn.group.internal.command.UpdateLeadersCommand;
 import org.apache.fineract.cn.group.internal.command.UpdateMembersCommand;
+import org.apache.fineract.cn.group.internal.command.UpdateGroupCommand;
 import org.apache.fineract.cn.group.internal.service.GroupDefinitionService;
 import org.apache.fineract.cn.group.internal.service.GroupService;
 import java.util.List;
@@ -80,7 +82,7 @@ public class GroupRestController {
     this.groupDefinitionService = groupDefinitionService;
   }
 
-  @Permittable(AcceptedTokenType.TENANT)
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)
   @RequestMapping(
       method = RequestMethod.POST,
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -102,7 +104,7 @@ public class GroupRestController {
     return ResponseEntity.accepted().build();
   }
 
-  @Permittable(AcceptedTokenType.TENANT)
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)
   @RequestMapping(
       method = RequestMethod.GET,
       consumes = MediaType.ALL_VALUE,
@@ -111,17 +113,17 @@ public class GroupRestController {
   public
   @ResponseBody
   ResponseEntity<GroupPage> fetchGroups(
-      @RequestParam("employee") final String employee,
-      @RequestParam("page") final Integer page,
-      @RequestParam("size") final Integer size,
-      @RequestParam("sortColumn") final String sortColumn,
-      @RequestParam("sortDirection") final String sortDirection) {
+      @RequestParam(value="employee",required=false) final String employee,
+      @RequestParam(value="page", required=false) final Integer page,
+      @RequestParam(value="size",required=false) final Integer size,
+      @RequestParam(value="sortColumn",required=false) final String sortColumn,
+      @RequestParam(value="sortDirection", required=false) final String sortDirection) {
     return ResponseEntity.ok(
         this.groupService.fetchGroups(employee, this.createPageRequest(page, size, sortColumn, sortDirection))
     );
   }
 
-  @Permittable(AcceptedTokenType.TENANT)
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)
   @RequestMapping(
       value = "/{identifier}",
       method = RequestMethod.GET,
@@ -136,6 +138,27 @@ public class GroupRestController {
         .orElseThrow(() -> ServiceException.notFound("Group {0} not found.", identifier));
   }
 
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)
+  @RequestMapping(
+          value = "/{identifier}",
+          method = RequestMethod.PUT,
+          consumes = MediaType.ALL_VALUE,
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+
+  public
+  @ResponseBody
+  ResponseEntity<Void> updateGroup(@PathVariable("identifier") final String identifier,
+                                      @RequestBody final Group group) {
+    this.groupService.findByIdentifier(identifier)
+            .orElseThrow(() -> ServiceException.notFound("Group {0} not found.", identifier));
+
+    this.commandGateway.process(new UpdateGroupCommand(group));
+
+    return ResponseEntity.accepted().build();
+  }
+
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)
   @RequestMapping(
       value = "/{identifier}/commands",
       method = RequestMethod.POST,
@@ -163,6 +186,7 @@ public class GroupRestController {
     return ResponseEntity.accepted().build();
   }
 
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)
   @RequestMapping(
       value = "/{identifier}/commands",
       method = RequestMethod.GET,
@@ -175,6 +199,7 @@ public class GroupRestController {
     return ResponseEntity.ok(this.groupService.findCommandsByIdentifier(identifier));
   }
 
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)
   @RequestMapping(
       value = "/{identifier}/leaders",
       method = RequestMethod.PUT,
@@ -193,6 +218,7 @@ public class GroupRestController {
     return ResponseEntity.accepted().build();
   }
 
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)
   @RequestMapping(
       value = "/{identifier}/members",
       method = RequestMethod.PUT,
@@ -211,6 +237,7 @@ public class GroupRestController {
     return ResponseEntity.accepted().build();
   }
 
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)
   @RequestMapping(
       value = "/{identifier}/employee",
       method = RequestMethod.PUT,
@@ -230,6 +257,7 @@ public class GroupRestController {
     return ResponseEntity.accepted().build();
   }
 
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)
   @RequestMapping(
       value = "/{identifier}/meetings",
       method = RequestMethod.GET,
@@ -245,6 +273,7 @@ public class GroupRestController {
     return ResponseEntity.ok(this.groupService.findMeetings(groupIdentifier, upcoming));
   }
 
+  @Permittable(value= AcceptedTokenType.TENANT, groupId = PermittableGroupIds.GROUP)
   @RequestMapping(
       value = "/{identifier}/meetings",
       method = RequestMethod.PUT,
