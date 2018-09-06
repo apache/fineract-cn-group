@@ -54,6 +54,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+
 public class TestGroupDefinition {
   private static final String APP_NAME = "group-v1";
   private static final String TEST_USER = "ranefer";
@@ -92,7 +93,7 @@ public class TestGroupDefinition {
 
   @After
   public void cleanTest() {
-    TenantContextHolder.clear();
+   //TenantContextHolder.clear();
     userContext.close();
   }
 
@@ -126,6 +127,34 @@ public class TestGroupDefinition {
     Assert.assertNull(fetchedGroupDefinition.getLastModifiedBy());
     Assert.assertNull(fetchedGroupDefinition.getLastModifiedOn());
   }
+
+
+  @Test
+  public void shouldUpdateGroupDefinition() throws Exception{
+    final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
+    this.testSubject.createGroupDefinition(randomGroupDefinition);
+
+    this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
+
+    final GroupDefinition updatedGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
+    updatedGroupDefinition.setIdentifier(randomGroupDefinition.getIdentifier());
+
+    this.testSubject.updateGroupDefinition(updatedGroupDefinition.getIdentifier(),updatedGroupDefinition);
+
+    this.eventRecorder.wait(EventConstants.PUT_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
+
+    final GroupDefinition fetchedGroupDefinition = this.testSubject.findGroupDefinition(updatedGroupDefinition.getIdentifier());
+    Assert.assertNotNull(fetchedGroupDefinition);
+    Assert.assertEquals(updatedGroupDefinition.getIdentifier(), fetchedGroupDefinition.getIdentifier());
+    Assert.assertEquals(updatedGroupDefinition.getDescription(), fetchedGroupDefinition.getDescription());
+    Assert.assertEquals(updatedGroupDefinition.getMinimalSize(), fetchedGroupDefinition.getMinimalSize());
+    Assert.assertEquals(updatedGroupDefinition.getMaximalSize(), fetchedGroupDefinition.getMaximalSize());
+    Assert.assertNotNull(fetchedGroupDefinition.getCycle());
+    Assert.assertEquals(updatedGroupDefinition.getCycle().getNumberOfMeetings(), fetchedGroupDefinition.getCycle().getNumberOfMeetings());
+    Assert.assertEquals(updatedGroupDefinition.getCycle().getFrequency(), fetchedGroupDefinition.getCycle().getFrequency());
+  }
+
+
 
   @Configuration
   @EnableEventRecording

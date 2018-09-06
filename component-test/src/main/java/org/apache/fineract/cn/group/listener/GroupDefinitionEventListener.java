@@ -47,4 +47,15 @@ public class GroupDefinitionEventListener {
                                        final String payload) {
     this.eventRecorder.event(tenant, EventConstants.POST_GROUP_DEFINITION, payload, String.class);
   }
+
+  @JmsListener(
+          subscription = EventConstants.DESTINATION,
+          destination = EventConstants.DESTINATION,
+          selector = EventConstants.SELECTOR_PUT_GROUP_DEFINITION
+  )
+  public void onGroupDefinitionUpdated(@Header(TenantHeaderFilter.TENANT_HEADER) final String tenant,
+                                       final String payload) {
+    this.eventRecorder.event(tenant, EventConstants.PUT_GROUP_DEFINITION, payload, String.class);
+  }
+
 }

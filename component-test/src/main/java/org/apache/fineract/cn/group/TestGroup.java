@@ -262,6 +262,29 @@ public class TestGroup {
     Assert.assertEquals(anotherEmployee.getIdentifier(), fetchedGroup.getAssignedEmployee());
   }
 
+  @Test
+  public void shouldUpdateGroup() throws Exception{
+    final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
+    this.testSubject.createGroupDefinition(randomGroupDefinition);
+    this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
+
+    final Group randomGroup = GroupGenerator.createRandomGroup(randomGroupDefinition.getIdentifier());
+    this.testSubject.createGroup(randomGroup);
+
+    this.eventRecorder.wait(EventConstants.POST_GROUP, randomGroup.getIdentifier());
+
+    randomGroup.setName(RandomStringUtils.randomAlphanumeric(256));
+
+    this.testSubject.updateGroup(randomGroup.getIdentifier(), randomGroup);
+
+    this.eventRecorder.wait(EventConstants.PUT_GROUP,randomGroup.getIdentifier());
+
+    final Group updatedGroup = this.testSubject.findGroup(randomGroup.getIdentifier());
+    Assert.assertEquals(randomGroup.getName(), updatedGroup.getName());
+
+
+  }
+
   @Configuration
   @EnableEventRecording
   @EnableFeignClients(basePackages = {"org.apache.fineract.cn.group.api.v1.client"})
