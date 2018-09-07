@@ -29,12 +29,14 @@ import org.apache.fineract.cn.group.api.v1.domain.Meeting;
 import org.apache.fineract.cn.group.api.v1.domain.SignOffMeeting;
 import org.apache.fineract.cn.group.util.GroupDefinitionGenerator;
 import org.apache.fineract.cn.group.util.GroupGenerator;
+
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.fineract.cn.anubis.test.v1.TenantApplicationSecurityEnvironmentTestRule;
 import org.apache.fineract.cn.api.context.AutoUserContext;
@@ -65,58 +67,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class TestGroup {
-  private static final String APP_NAME = "group-v1";
-  private static final String TEST_USER = "ranefer";
-
-  private final static TestEnvironment testEnvironment = new TestEnvironment(APP_NAME);
-  private final static CassandraInitializer cassandraInitializer = new CassandraInitializer();
-  private final static MariaDBInitializer mariaDBInitializer = new MariaDBInitializer();
-  private final static TenantDataStoreContextTestRule tenantDataStoreContext = TenantDataStoreContextTestRule.forRandomTenantName(cassandraInitializer, mariaDBInitializer);
-
-  @ClassRule
-  public static TestRule orderClassRules = RuleChain
-          .outerRule(testEnvironment)
-          .around(cassandraInitializer)
-          .around(mariaDBInitializer)
-          .around(tenantDataStoreContext);
-
-  @Rule
-  public final TenantApplicationSecurityEnvironmentTestRule tenantApplicationSecurityEnvironment
-          = new TenantApplicationSecurityEnvironmentTestRule(testEnvironment, this::waitForInitialize);
-  @Autowired
-  private GroupManager testSubject;
-  @Autowired
-  private EventRecorder eventRecorder;
-
-  private AutoUserContext userContext;
-
-  public TestGroup() {
-    super();
-  }
-
-  @Before
-  public void prepTest() {
-    userContext = this.tenantApplicationSecurityEnvironment.createAutoUserContext(TestGroup.TEST_USER);
-  }
-
-  @After
-  public void cleanTest() {
-    userContext.close();
-  }
-
-  public boolean waitForInitialize() {
-    try {
-      return this.eventRecorder.wait(EventConstants.INITIALIZE, EventConstants.INITIALIZE);
-    } catch (final InterruptedException e) {
-      throw new IllegalStateException(e);
-    }
-  }
+public class TestGroup extends AbstractGroupTest {
 
   @Test
-  public void shouldCreateGroup() throws Exception {
+  public void shouldCreateGroup ( ) throws Exception {
     final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
 
     this.testSubject.createGroupDefinition(randomGroupDefinition);
@@ -147,7 +101,7 @@ public class TestGroup {
   }
 
   @Test
-  public void shouldActivateCommand() throws Exception {
+  public void shouldActivateCommand ( ) throws Exception {
     final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
     this.testSubject.createGroupDefinition(randomGroupDefinition);
     this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
@@ -171,7 +125,7 @@ public class TestGroup {
     final Group activatedGroup = this.testSubject.findGroup(randomGroup.getIdentifier());
     Assert.assertEquals(Group.Status.ACTIVE.name(), activatedGroup.getStatus());
 
-    final List<GroupCommand> groupCommands = this.testSubject.fetchGroupCommands(activatedGroup.getIdentifier());
+    final List <GroupCommand> groupCommands = this.testSubject.fetchGroupCommands(activatedGroup.getIdentifier());
     Assert.assertTrue(groupCommands.size() == 1);
     final GroupCommand groupCommand = groupCommands.get(0);
     Assert.assertEquals(activate.getAction(), groupCommand.getAction());
@@ -179,7 +133,7 @@ public class TestGroup {
     Assert.assertEquals(activate.getCreatedBy(), groupCommand.getCreatedBy());
     Assert.assertNotNull(groupCommand.getCreatedOn());
 
-    final List<Meeting> meetings = this.testSubject.fetchMeetings(activatedGroup.getIdentifier(), Boolean.FALSE);
+    final List <Meeting> meetings = this.testSubject.fetchMeetings(activatedGroup.getIdentifier(), Boolean.FALSE);
     Assert.assertNotNull(meetings);
     Assert.assertEquals(randomGroupDefinition.getCycle().getNumberOfMeetings(), Integer.valueOf(meetings.size()));
 
@@ -189,12 +143,12 @@ public class TestGroup {
     signOffMeeting.setSequence(meeting2signOff.getMeetingSequence());
     signOffMeeting.setDuration(120L);
     signOffMeeting.setAttendees(meeting2signOff.getAttendees()
-        .stream()
-        .map(attendee -> {
-          attendee.setStatus(Attendee.Status.ATTENDED.name());
-          return attendee;
-        })
-        .collect(Collectors.toSet())
+            .stream()
+            .map(attendee -> {
+              attendee.setStatus(Attendee.Status.ATTENDED.name());
+              return attendee;
+            })
+            .collect(Collectors.toSet())
     );
 
     this.testSubject.closeMeeting(activatedGroup.getIdentifier(), signOffMeeting);
@@ -202,7 +156,7 @@ public class TestGroup {
   }
 
   @Test
-  public void shouldUpdateLeaders() throws Exception {
+  public void shouldUpdateLeaders ( ) throws Exception {
     final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
     this.testSubject.createGroupDefinition(randomGroupDefinition);
     this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
@@ -221,7 +175,7 @@ public class TestGroup {
   }
 
   @Test
-  public void shouldUpdateMembers() throws Exception {
+  public void shouldUpdateMembers ( ) throws Exception {
     final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
     this.testSubject.createGroupDefinition(randomGroupDefinition);
     this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
@@ -232,8 +186,8 @@ public class TestGroup {
 
     final int currentMembersSize = randomGroup.getMembers().size();
     randomGroup.getMembers().addAll(Arrays.asList(
-        RandomStringUtils.randomAlphanumeric(32),
-        RandomStringUtils.randomAlphanumeric(32)
+            RandomStringUtils.randomAlphanumeric(32),
+            RandomStringUtils.randomAlphanumeric(32)
     ));
     this.testSubject.updateMembers(randomGroup.getIdentifier(), randomGroup.getMembers());
     this.eventRecorder.wait(EventConstants.PUT_GROUP, randomGroup.getIdentifier());
@@ -243,7 +197,7 @@ public class TestGroup {
   }
 
   @Test
-  public void shouldUpdateAssignedEmployee() throws Exception {
+  public void shouldUpdateAssignedEmployee ( ) throws Exception {
     final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
     this.testSubject.createGroupDefinition(randomGroupDefinition);
     this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
@@ -263,7 +217,7 @@ public class TestGroup {
   }
 
   @Test
-  public void shouldUpdateGroup() throws Exception{
+  public void shouldUpdateGroup ( ) throws Exception {
     final GroupDefinition randomGroupDefinition = GroupDefinitionGenerator.createRandomGroupDefinition();
     this.testSubject.createGroupDefinition(randomGroupDefinition);
     this.eventRecorder.wait(EventConstants.POST_GROUP_DEFINITION, randomGroupDefinition.getIdentifier());
@@ -277,28 +231,9 @@ public class TestGroup {
 
     this.testSubject.updateGroup(randomGroup.getIdentifier(), randomGroup);
 
-    this.eventRecorder.wait(EventConstants.PUT_GROUP,randomGroup.getIdentifier());
+    this.eventRecorder.wait(EventConstants.PUT_GROUP, randomGroup.getIdentifier());
 
     final Group updatedGroup = this.testSubject.findGroup(randomGroup.getIdentifier());
     Assert.assertEquals(randomGroup.getName(), updatedGroup.getName());
-
-
-  }
-
-  @Configuration
-  @EnableEventRecording
-  @EnableFeignClients(basePackages = {"org.apache.fineract.cn.group.api.v1.client"})
-  @RibbonClient(name = APP_NAME)
-  @Import({GroupConfiguration.class})
-  @ComponentScan("org.apache.fineract.cn.group.listener")
-  public static class TestConfiguration {
-    public TestConfiguration() {
-      super();
-    }
-
-    @Bean()
-    public Logger logger() {
-      return LoggerFactory.getLogger("test-logger");
-    }
   }
 }
