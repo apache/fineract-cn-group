@@ -33,29 +33,25 @@ public class GroupGenerator {
 
   public static Group createRandomGroup(final String definitionIdentifier) {
     final Group group = new Group();
-    group.setIdentifier(RandomStringUtils.randomAlphanumeric(32));
+    group.setIdentifier("grp" + RandomStringUtils.randomAlphanumeric(3));
     group.setGroupDefinitionIdentifier(definitionIdentifier);
-    group.setName(RandomStringUtils.randomAlphanumeric(256));
-    group.setOffice(RandomStringUtils.randomAlphanumeric(32));
-    group.setAssignedEmployee(RandomStringUtils.randomAlphanumeric(32));
-    group.setLeaders(new HashSet<>(Arrays.asList(
-        RandomStringUtils.randomAlphanumeric(32), RandomStringUtils.randomAlphanumeric(32)
+    group.setName("groupName" + RandomStringUtils.randomAlphanumeric(2));
+    group.setOffice("office" + RandomStringUtils.randomAlphanumeric(4));
+    group.setAssignedEmployee("employee" + RandomStringUtils.randomAlphanumeric(3));
+    group.setLeaders(new HashSet<>(Arrays.asList("Leader" +
+            RandomStringUtils.randomAlphanumeric(3), "Leader" + RandomStringUtils.randomAlphanumeric(3)
     )));
     group.setMembers(new HashSet<>(Arrays.asList(
-        RandomStringUtils.randomAlphanumeric(32), RandomStringUtils.randomAlphanumeric(32),
-        RandomStringUtils.randomAlphanumeric(32), RandomStringUtils.randomAlphanumeric(32),
-        RandomStringUtils.randomAlphanumeric(32), RandomStringUtils.randomAlphanumeric(32),
-        RandomStringUtils.randomAlphanumeric(32), RandomStringUtils.randomAlphanumeric(32),
-        RandomStringUtils.randomAlphanumeric(32), RandomStringUtils.randomAlphanumeric(32)
+            "Member" + RandomStringUtils.randomAlphanumeric(3), "Member" + RandomStringUtils.randomAlphanumeric(3)
     )));
     group.setWeekday(Group.Weekday.WEDNESDAY.getValue());
     final Address address = new Address();
-    address.setStreet(RandomStringUtils.randomAlphanumeric(256));
-    address.setCity(RandomStringUtils.randomAlphanumeric(256));
-    address.setRegion(RandomStringUtils.randomAlphanumeric(256));
-    address.setPostalCode(RandomStringUtils.randomAlphanumeric(2));
-    address.setCountry(RandomStringUtils.randomAlphanumeric(256));
-    address.setCountryCode(RandomStringUtils.randomAlphanumeric(2));
+    address.setStreet("street" + RandomStringUtils.randomAlphanumeric(4));
+    address.setCity("city" + RandomStringUtils.randomAlphanumeric(5));
+    address.setRegion("region" + RandomStringUtils.randomAlphanumeric(6));
+    address.setPostalCode(RandomStringUtils.randomAlphanumeric(4));
+    address.setCountry("country" + RandomStringUtils.randomAlphanumeric(6));
+    address.setCountryCode(RandomStringUtils.randomAlphanumeric(2).toUpperCase());
     group.setAddress(address);
     return group;
   }
