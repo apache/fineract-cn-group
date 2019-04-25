@@ -1,4 +1,4 @@
-# Apache Fineract CN Group Management
+# Apache Fineract CN Group Management [![Build Status](https://api.travis-ci.com/apache/fineract-cn-group.svg?branch=develop)](https://travis-ci.com/apache/fineract-cn-group)
 
 This project provides Group management capabilities.
 
