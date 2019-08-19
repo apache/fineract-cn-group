@@ -28,8 +28,7 @@ ARG group_port=2032
 
 ENV server.max-http-header-size=16384 \
     cassandra.clusterName="Test Cluster" \
-    server.port=$group_port \
-    system.initialclientid=service-runner
+    server.port=$group_port
 
 WORKDIR /tmp
 COPY  --from=builder /builddir/service/build/libs/service-0.1.0-BUILD-SNAPSHOT-boot.jar ./group-service-boot.jar
