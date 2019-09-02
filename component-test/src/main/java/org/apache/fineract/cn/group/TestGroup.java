@@ -43,7 +43,7 @@ import org.apache.fineract.cn.api.context.AutoUserContext;
 import org.apache.fineract.cn.test.env.TestEnvironment;
 import org.apache.fineract.cn.test.fixture.TenantDataStoreContextTestRule;
 import org.apache.fineract.cn.test.fixture.cassandra.CassandraInitializer;
-import org.apache.fineract.cn.test.fixture.mariadb.MariaDBInitializer;
+import org.apache.fineract.cn.test.fixture.postgresql.PostgreSQLInitializer;
 import org.apache.fineract.cn.test.listener.EnableEventRecording;
 import org.apache.fineract.cn.test.listener.EventRecorder;
 import org.junit.After;

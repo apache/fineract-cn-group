@@ -18,7 +18,7 @@
 --
 
 CREATE TABLE ptah_addresses (
-  id BIGINT NOT NULL AUTO_INCREMENT,
+  id BIGSERIAL NOT NULL,
   street       VARCHAR(256) NOT NULL,
   city         VARCHAR(256) NOT NULL,
   postal_code  VARCHAR(32) NULL,
@@ -29,7 +29,7 @@ CREATE TABLE ptah_addresses (
 );
 
 CREATE TABLE ptah_group_definitions (
-  id                 BIGINT        NOT NULL AUTO_INCREMENT,
+  id                 BIGSERIAL     NOT NULL,
   identifier         VARCHAR(32)   NOT NULL,
   description        VARCHAR(2048) NULL,
   minimal_size       INTEGER       NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE ptah_group_definitions (
 );
 
 CREATE TABLE ptah_groups (
-  id                  BIGINT        NOT NULL AUTO_INCREMENT,
+  id                  BIGSERIAL     NOT NULL,
   identifier          VARCHAR(32)   NOT NULL,
   group_definition_id BIGINT        NOT NULL,
   a_name              VARCHAR(256)  NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE ptah_groups (
 );
 
 CREATE TABLE ptah_group_commands (
-  id         BIGINT       NOT NULL AUTO_INCREMENT,
+  id         BIGSERIAL    NOT NULL,
   group_id   BIGINT       NOT NULL,
   a_action   VARCHAR(32)  NOT NULL,
   note       VARCHAR(256) NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE ptah_group_commands (
 );
 
 CREATE TABLE ptah_meetings (
-  id               BIGINT       NOT NULL AUTO_INCREMENT,
+  id               BIGSERIAL    NOT NULL,
   group_id         BIGINT       NOT NULL,
   meeting_sequence BIGINT       NOT NULL,
   current_cycle    BIGINT       NOT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE ptah_meetings (
 );
 
 CREATE TABLE ptah_attendees (
-  id                  BIGINT       NOT NULL AUTO_INCREMENT,
+  id                  BIGSERIAL    NOT NULL,
   meeting_id          BIGINT       NOT NULL,
   customer_identifier VARCHAR(32)  NOT NULL,
   a_status            VARCHAR(256) NOT NULL,
