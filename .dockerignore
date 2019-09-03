@@ -1,0 +1,7 @@
+LICENSE
+docs/
+HEADER
+NOTICE.txt
+.git/
+.gradle/
+.gitignore
