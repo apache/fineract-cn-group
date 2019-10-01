@@ -52,7 +52,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 
 server:
-  port: 8081
+  port: 2032
   contextPath: /group/v1/*
 
 cassandra:
