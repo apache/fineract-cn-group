@@ -77,7 +77,6 @@ public class AbstractGroupTest extends SuiteTestEnvironment {
     @Configuration
     @EnableEventRecording
     @EnableFeignClients(basePackages = {"org.apache.fineract.cn.group.api.v1.client"})
-    @RibbonClient(name = APP_NAME)
     @Import({GroupConfiguration.class})
     @ComponentScan("org.apache.fineract.cn.group.listener")
     public static class TestConfiguration {

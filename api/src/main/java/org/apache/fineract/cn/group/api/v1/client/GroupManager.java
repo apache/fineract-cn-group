@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @SuppressWarnings("unused")
-@FeignClient(name="group-v1", path="/group/v1", configuration=CustomFeignClientsConfiguration.class)
+@FeignClient(path="/group/v1", url = "http://${kubernetes.group.service.name}:${kubernetes.group.server.port}", configuration=CustomFeignClientsConfiguration.class)
 public interface GroupManager {
 
   @RequestMapping(
