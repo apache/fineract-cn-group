@@ -1,4 +1,4 @@
-# Apache Fineract CN Group Management [![Build Status](https://api.travis-ci.com/apache/fineract-cn-group.svg?branch=develop)](https://travis-ci.com/apache/fineract-cn-group) [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/apache/fineract-cn-group)](https://hub.docker.com/r/apache/fineract-cn-group/builds)
+# Apache Fineract CN Group Management [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/apache/fineract-cn-group)](https://hub.docker.com/r/apache/fineract-cn-group/builds)
 
 This project provides Group management capabilities.
 [Read more](https://cwiki.apache.org/confluence/display/FINERACT/Fineract+CN+Project+Structure#FineractCNProjectStructure-group).
